@@ -85,19 +85,23 @@ void solve()
 
 		if (list[idx + 1] == '0')
 		{
-			push_front(idx + 1);
 			list[idx + 1] = '1';
+			push_front(idx + 1);			
 		}
 		else if (list[idx + 1] == '1')
 		{
-			pop_front(&dummy);
 			list[idx + 1] = '0';
+			pop_front(&dummy);			
 		}
 
 		if (list[idx - 1] == '0')
 		{
-			push_front(idx - 1);
 			list[idx - 1] = '1';
+			
+			if (idx > 2 && list[idx - 2] == 'X')
+				continue;
+
+			push_front(idx - 1);			
 		}
 	}
 
