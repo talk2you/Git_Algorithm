@@ -15,7 +15,7 @@ void init()
 
 int isEmpty()
 {
-	if (front == end)
+	if (front == end)	
 		return 1;
 	return 0;
 }
@@ -23,22 +23,20 @@ int isEmpty()
 int isFull()
 {
 	int temp = front - 1;
-	
-	if (temp < 0)
-		temp += MAX_QUE;
 
-	if (temp == end)
+	if (temp < 0)		
+		temp += MAX_QUE;
+	if (temp == end)	
 		return 1;
 	return 0;
 }
 
 int push_front(int idx)
 {
-	if (isFull())
+	if (isFull())		
 		return 0;
-
-	front--;
-	if (front < 0)
+	
+	if (--front < 0)	
 		front += MAX_QUE;
 	deque[front] = idx;
 	return 1;
@@ -66,15 +64,13 @@ int push_back(int idx)
 
 void input()
 {
-	int i = 0;
-	
-	scanf(" %s", list);
-	
+	scanf(" %s", list);	
 }
 
 void solve()
 {
-	int i = 0;
+	register int i = 0;
+	int idx, dummy;
 
 	while (list[i])
 	{
@@ -82,8 +78,7 @@ void solve()
 			push_back(i);
 		++i;
 	}
-
-	int idx, dummy;
+	
 	while (pop_front(&idx))
 	{
 		list[idx] = 'X';
@@ -106,7 +101,7 @@ void solve()
 		}
 	}
 
-	for (int i = strlen(list); i >= 0; --i)
+	for (register int i = strlen(list); i >= 0; --i)
 	{
 		if (list[i] == '0')
 		{
@@ -114,7 +109,6 @@ void solve()
 			return;
 		}
 	}
-
 	printf("yes\n");
 }
 
