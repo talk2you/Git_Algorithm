@@ -9,7 +9,7 @@ typedef struct {
 }ITEM;
 ITEM item[103];
 
-int dp[103][1000003];
+int dp[103][100003];
 
 void input()
 {
