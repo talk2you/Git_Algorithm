@@ -9,7 +9,7 @@ int list[100003];
 typedef struct {
 	int min, max;
 }SEG_TREE;
-SEG_TREE seg_tree[1050000];
+SEG_TREE seg_tree[300000];
 
 void input()
 {
