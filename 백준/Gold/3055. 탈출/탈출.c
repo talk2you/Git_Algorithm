@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#define MAX_QUE 500000
+#define MAX_QUE 2500
 
 int R, C;
 char map[53][53];
