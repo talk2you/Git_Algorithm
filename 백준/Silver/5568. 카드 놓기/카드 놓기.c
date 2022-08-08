@@ -6,7 +6,7 @@
 int N, K;
 int ans;
 
-char card[11][25];
+char card[11][21];
 int visit[11];
 
 typedef struct HASH {
@@ -23,10 +23,10 @@ void input()
 	scanf("%d", &K);
 
 	for (int i = 0; i < N; i++)
-		scanf(" %s", &card[i]);
+		scanf(" %s", card[i]);
 }
 
-int make_hash(char s[25])
+int make_hash(char s[21])
 {
 	int i = 0;
 	int h = 5381;
@@ -37,7 +37,7 @@ int make_hash(char s[25])
 	return h;
 }
 
-int add_hash(char s[25])
+int add_hash(char s[21])
 {
 	int h = make_hash(s);
 
