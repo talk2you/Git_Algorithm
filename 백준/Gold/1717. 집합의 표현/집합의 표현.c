@@ -1,53 +1,44 @@
 #include <stdio.h>
 
 int N, M;
-
-int parent[1000003];
+int parent[1000001];
 
 void init()
 {
-	for (int i = 0;i <= 1000000;i++)
+	for (int i = 0; i <= 1000000; i++)
 		parent[i] = i;
 }
 
-int find(int a)
+int find_parent(int n)
 {
-	if (parent[a] == a)
-		return a;
+	if (parent[n] == n)
+		return n;
 
-	return parent[a] = find(parent[a]);
-}
-
-void merge(int a, int b)
-{
-	int pa = find(a);
-	int pb = find(b);
-
-	if (pa == pb)
-		return;
-
-	parent[pa] = pb;
+	return parent[n] = find_parent(parent[n]);
 }
 
 void input()
 {
 	int cmd, a, b;
-
+	int pa, pb;
 	scanf("%d %d", &N, &M);
 
-	for (int i = 1;i <= M;++i)
+	for (int i = 0; i < M; i++)
 	{
 		scanf("%d %d %d", &cmd, &a, &b);
 
+		pa = find_parent(a);
+		pb = find_parent(b);
+
 		if (cmd == 0)
 		{
-			merge(a, b);
+			if (pa == pb)
+				continue;
+			else
+				parent[pa] = pb;
 		}
 		else
 		{
-			int pa = find(a);
-			int pb = find(b);
-
 			if (pa == pb)
 				printf("YES\n");
 			else
