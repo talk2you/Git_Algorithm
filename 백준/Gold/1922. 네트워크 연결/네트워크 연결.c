@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX	1000003
+#define MAX	100003
 
 int N, M;
 int ans;
