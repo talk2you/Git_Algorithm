@@ -1,34 +1,65 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX_SIZE 100003
-#define Max(a, b) ((a>b)?(a):(b))
+#define MAX	100000
 
-char num[10];
-int len;
+char ans[11];
+char num[11];
 int K;
-int ans;
 
-typedef struct NODE{
-	char n[10];
-	struct NODE *next;
-}NODE;
-NODE pool[100003];
-NODE hash[100003];
+typedef struct HASH {
+	char num[11];
+	struct HASH *next;
+}HASH;
+HASH pool[MAX];
+HASH *head[MAX];
 int pool_size;
 
-typedef struct {
-	char n[10];
+typedef struct QUE {
+	char num[11];
+	int stage;
 }QUE;
-QUE que[100003];
-int front, end;
-int que_size;
+QUE que[MAX];
+int start, end;
+
+void input()
+{
+	scanf("%s", num);
+	scanf("%d", &K);
+}
+
+int make_hash(char n[11])
+{
+	int h = 5381;
+	int i = 0;
+	while (n[i])
+		h += ((h << 5) + 5 + n[i++]) % MAX;
+	h %= MAX;
+	return h;
+}
+
+int check_hash(char n[11])
+{
+	int h = make_hash(n);
+	HASH *nd = head[h];
+	while (nd)
+	{
+		if (strcmp(nd->num, n) == 0)
+			return 0;
+		nd = nd->next;
+	}
+
+	strcpy(pool[pool_size].num, n);
+	pool[pool_size].next = head[h];
+	head[h] = &pool[pool_size++];
+	return 1;
+}
 
 int isFull()
 {
-	int temp = front - 1;
+	int temp = start - 1;
 	if (temp < 0)
-		temp += MAX_SIZE;
+		temp += MAX;
 
 	if (temp == end)
 		return 1;
@@ -37,139 +68,84 @@ int isFull()
 
 int isEmpty()
 {
-	if (front == end)
+	if (start == end)
 		return 1;
 	return 0;
 }
 
-int push(char n[10])
+void push(char n[11], int stage)
 {
 	if (isFull())
-		return 0;
+		return;
 
-	que_size++;
-	strcpy(que[end].n, n);
-	end++;
-	end %= MAX_SIZE;
-	return 1;
+	que[end].stage = stage;
+	strcpy(que[end++].num, n);
+	end %= MAX;
 }
 
-int pop(char n[10])
+int pop(char n[11], int *stage)
 {
 	if (isEmpty())
 		return 0;
 
-	que_size--;
-	strcpy(n, que[front].n);
-	front++;
-	front %= MAX_SIZE;
+	*stage = que[start].stage;
+	strcpy(n, que[start++].num);
+	start %= MAX;
 	return 1;
 }
 
-int make_hash(char n[10])
+void max_value(char num[11])
 {
-	int h = 5381;
-	int i = 0;
-	
-	while (n[i])
-		h += ((h << 5) + h + n[i++]) % MAX_SIZE;
-	h %= MAX_SIZE;
-
-	return h;
-}
-
-int add_hash(char n[10])
-{
-	int h = make_hash(n);
-
-	NODE *nd = &hash[h];
-	while (nd->next)
-	{
-		nd = nd->next;
-
-		if (strcmp(nd->n, n) == 0)
-			return 0;
-	}
-
-	strcpy(pool[pool_size].n, n);
-	pool[pool_size].next = hash[h].next;
-	hash[h].next = &pool[pool_size++];
-	return 1;
-}
-
-void input()
-{
-	scanf("%s", num);
-	scanf("%d", &K);
-	len = strlen(num);
-}
-
-int myAtoi(char n[10])
-{
-	int temp = 0;
-	int ten = 1;
-	char temp_n[10];
-	strcpy(temp_n, n);
-
-	for (int i = len-1; i >= 0; i--)
-	{
-		temp += ((temp_n[i] - '0')*ten);
-		ten *= 10;
-	}
-	return temp;
+	if (strcmp(ans, num) < 0)
+		strcpy(ans, num);
 }
 
 void solve()
 {
-	char n[10];
-	push(num);
+	int str_size = strlen(num);
+	push(num, 0);
 
-	for (int i = 0; i < K; i++)
-	{ 
-		int q_size = que_size;
-		pool_size = 0;
-		memset(hash, 0, sizeof(hash));
-
-		for (int j = 0; j < q_size; j++)
+	char pop_num[11], temp_num[11];
+	int now_stage = 0, pop_stage = 0;
+	while (pop(pop_num, &pop_stage))
+	{
+		if (pop_stage > K)
 		{
-			pop(n);
-			
-			for (int k = 0; k < len-1; k++)
+			printf("%s\n", ans);
+			return;
+		}
+
+		if (pop_stage == K)
+		{
+			max_value(pop_num);
+		}
+
+		if (now_stage != pop_stage)
+		{
+			memset(head, 0, sizeof(head));
+			memset(pool, 0, sizeof(pool));
+			now_stage = pop_stage;
+		}
+
+		for (int i = 0; i < str_size - 1; i++)
+		{
+			for (int j = i + 1; j < str_size; j++)
 			{
-				for (int l = k + 1; l < len; l++)
-				{
-					if (!(k == 0 && n[l] == '0'))
-					{
-						char temp = n[k];
-						n[k] = n[l];
-						n[l] = temp;
+				strcpy(temp_num, pop_num);
+				char temp = pop_num[i];
+				temp_num[i] = temp_num[j];
+				temp_num[j] = temp;
 
-						if (add_hash(n) == 0)
-						{
-							temp = n[k];
-							n[k] = n[l];
-							n[l] = temp;
-							continue;
-						}
+				if (temp_num[0] == '0')
+					continue;
 
-						push(n);
-
-						temp = n[k];
-						n[k] = n[l];
-						n[l] = temp;
-					}
-				}
+				if (check_hash(temp_num))
+					push(temp_num, now_stage+1);
 			}
 		}
 	}
 
-	while (pop(n))
-		ans = Max(ans, myAtoi(n));
-	
-	if (ans == 0)
-		printf("-1\n");
-	else
-		printf("%d\n", ans);
+	printf("-1\n");
 }
 
 int main(void)
