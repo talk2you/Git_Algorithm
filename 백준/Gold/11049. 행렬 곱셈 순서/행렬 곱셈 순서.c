@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#define INF 0x7FFFFFFFFFFF
+#define INF 0x7FFFFFFF
 #define Min(a, b) ((a<b)?(a):(b))
 int N;
 
@@ -9,7 +9,7 @@ typedef struct {
 }MATRIX;
 MATRIX matrix[501];
 
-long long dp[501][501];
+int dp[501][501];
 
 void input()
 {
@@ -22,7 +22,7 @@ void input()
 	}
 }
 
-long long search(int start, int end)
+int search(int start, int end)
 {
 	if (start == end)
 		return dp[start][end];
@@ -30,11 +30,11 @@ long long search(int start, int end)
 	if (dp[start][end])
 		return dp[start][end];
 
-	long long ret = INF;
+	int ret = INF;
 
 	for (int i = start; i < end; i++)
 	{
-		long long temp = search(start, i) + search(i + 1, end);
+		int temp = search(start, i) + search(i + 1, end);
 		temp += matrix[start].r * matrix[i].c * matrix[end].c;
 
 		ret = Min(ret, temp);
@@ -46,7 +46,7 @@ long long search(int start, int end)
 void solve()
 {
 	search(0, N-1);
-	printf("%lld\n", dp[0][N - 1]);
+	printf("%d\n", dp[0][N - 1]);
 }
 
 int main(void)
