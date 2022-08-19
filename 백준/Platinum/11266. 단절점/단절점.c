@@ -57,8 +57,13 @@ int search(int start, int root)
 			int ret = search(nd->n, root);
 			min_ret = Min(min_ret, ret);
 
-			if (ret == visit[start])
-				flag = 1;
+			if (start != root && ret == visit[start])
+			{
+				if(ans[start] == 0)
+					ans_size++;
+
+				ans[start] = 1;
+			}
 		}
 		else
 		{
@@ -69,15 +74,13 @@ int search(int start, int root)
 		nd = nd->next;
 	}
 
-	if (flag)
+	if (start == root)
 	{
-		if (start == root)
+		if (child_cnt >= 2)
 		{
-			if (child_cnt < 2)
-				return 0;
+			ans[start] = 1;
+			ans_size++;
 		}
-
-		ans[ans_size++] = start;
 	}
 
 	return min_ret;
@@ -128,12 +131,18 @@ void solve()
 		}
 	}
 
-	sort(0, ans_size - 1);
+	//sort(0, ans_size - 1);
 
 	printf("%d\n", ans_size);
-	for (int i = 0; i < ans_size; i++)
-		printf("%d ", ans[i]);
+	for (int i = 1; i <= V; i++)
+	{
+		if (ans[i])
+			printf("%d ", i);
+	}
 	printf("\n");
+	/*for (int i = 0; i < ans_size; i++)
+		printf("%d ", ans[i]);*/
+	
 }
 
 int main(void)
