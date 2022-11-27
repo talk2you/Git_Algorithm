@@ -31,22 +31,21 @@ int back_tracking(int n, int cnt)
 		return 0;
 	if (cnt == M)
 		return MINUS_INF;
-	int *ret = &dp[n][cnt];
+	if (dp[n][cnt] != -1)
+		return dp[n][cnt];
 
-	if (*ret != -1)
-		return *ret;
-
-	*ret = MINUS_INF;
+	int ret = MINUS_INF;
 
 	for (int i = 1; i <= N; i++)
 	{
 		if (map[n][i])
 		{
-			*ret = MAX(*ret, map[n][i] + back_tracking(i, cnt + 1));
+			ret = MAX(ret, map[n][i] + back_tracking(i, cnt + 1));
 		}
 	}
 
-	return *ret;
+	dp[n][cnt] = ret;
+	return ret;
 }
 
 void solve()
